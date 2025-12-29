@@ -197,3 +197,15 @@ constructor(private readonly authService: AuthService) {}
 
 **Simple analogy:**
 Instead of going to the kitchen to cook (creating the service yourself), you tell the waiter what you need (putting it in the constructor), and NestJS (the waiter) brings it to you automatically.
+
+
+Modules are isolated from each other. only the services that are registered in the module can be used in the controller of the module.
+we cannot use services from one module in another module.
+except when using exports in the module.ts file.
+
+now i have 2 modules auth and user,i want to use the code in my usermodule i.e userservice in a different module,so
+i need to export the userservice in the user.module.ts file. in the exports"[] array we add the services that we want to export.
+now in the auth.module.ts file we import the user.module.ts file and use the userservice in the auth.controller.ts file.
+this is done using the imports"[] array in the auth.module.ts file.
+
+basically service is exported from one module[user] and then imported in anohter module[auth] using imports"[] array as module.
