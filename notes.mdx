@@ -40,3 +40,160 @@ nest g pipe <pipe-name>
 to create a guard using cli,use the following command:
 nest g guard <guard-name>
 -> we need to have a module first to create a guard.
+
+1) What is a constructor?
+A constructor runs when you create an object. It sets up the object.
+
+Simple example:
+```typescript
+// Without constructor (manual setup)
+class Person {
+  name: string;
+}
+
+const person = new Person();
+person.name = "John"; // You have to set it manually
+
+// With constructor (automatic setup)
+class Person {
+  constructor(name: string) {
+    this.name = name; // Automatically sets name when created
+  }
+}
+
+const person = new Person("John"); // Name is set automatically!
+```
+
+2) What does `private readonly` mean?
+Breaking it down:
+
+- `private`: Only this class can use it. Others can't access it.
+- `readonly`: Can't change it after it's set (like a constant).
+
+Simple example:
+```typescript
+class BankAccount {
+  private balance: number = 100; // Only this class can see it
+  readonly accountNumber: string = "12345"; // Can't change it
+  
+  getBalance() {
+    return this.balance; // ✅ Can access it here (same class)
+  }
+}
+
+const account = new BankAccount();
+account.balance; // ❌ ERROR! Can't access private from outside
+account.accountNumber = "99999"; // ❌ ERROR! Can't change readonly
+```
+
+3) Why use `private readonly` in the constructor?
+This is a TypeScript shortcut that:
+- Creates a property
+- Makes it private
+- Makes it readonly
+- Assigns the value from the constructor parameter
+
+Your code:
+```typescript
+constructor(private readonly authService: AuthService) {}
+```
+
+This is equivalent to:
+```typescript
+private readonly authService: AuthService;
+
+constructor(authService: AuthService) {
+  this.authService = authService;
+}
+```
+
+4) What is dependency injection?
+Instead of creating dependencies inside a class, you receive them from outside. NestJS handles this.
+
+Bad way (without dependency injection):
+```typescript
+class AuthController {
+  authService: AuthService;
+  
+  constructor() {
+    // ❌ BAD: Creating the dependency yourself
+    this.authService = new AuthService();
+  }
+}
+```
+
+Good way (with dependency injection):
+```typescript
+class AuthController {
+  constructor(private readonly authService: AuthService) {
+    // ✅ GOOD: NestJS gives you the service automatically!
+  }
+}
+```
+
+5) How NestJS does it
+NestJS creates the service and passes it to the controller.
+
+Step-by-step:
+1. You register `AuthService` in the module (line 7 of `auth.module.ts`).
+2. NestJS creates an instance of `AuthService`.
+3. When creating `AuthController`, NestJS sees it needs `AuthService` in the constructor.
+4. NestJS automatically passes the `AuthService` instance to the constructor.
+5. You can use `this.authService` anywhere in the controller.
+
+Visual example:
+```typescript
+// What YOU write:
+@Controller('auth')
+export class AuthController {
+  constructor(private readonly authService: AuthService) {}
+  
+  register() {
+    return this.authService.registerUser();
+  }
+}
+
+// What NestJS does behind the scenes (simplified):
+const authService = new AuthService(); // Step 1: Create service
+const authController = new AuthController(authService); // Step 2: Pass it in
+```
+
+6) Why is this useful?
+- Testable: Easy to swap in a fake service for testing.
+- Flexible: Change the service implementation without changing the controller.
+- Organized: Each class has a clear job.
+
+Example:
+```typescript
+// Easy to test with a fake service
+class FakeAuthService {
+  registerUser() {
+    return { message: 'Fake registration' };
+  }
+}
+
+// In tests, you can do:
+const controller = new AuthController(new FakeAuthService());
+```
+
+
+## Summary
+
+**Your code:**
+```typescript
+constructor(private readonly authService: AuthService) {}
+```
+
+**What it means:**
+1. `constructor(...)` = runs when the object is created
+2. `private` = only this class can use `authService`
+3. `readonly` = `authService` can't be changed after it's set
+4. `authService: AuthService` = you're asking NestJS to give you an `AuthService`
+
+**Why it's written this way:**
+- NestJS automatically creates `AuthService` and passes it to your constructor
+- You don't create it yourself; NestJS handles it
+- This is called Dependency Injection
+
+**Simple analogy:**
+Instead of going to the kitchen to cook (creating the service yourself), you tell the waiter what you need (putting it in the constructor), and NestJS (the waiter) brings it to you automatically.
