@@ -217,3 +217,15 @@ To read environment variables,we use the following command:
 pnpm add @nestjs/config
 
 then in app.module.ts,in the imports"[] array we add the ConfigModule.forRoot() to read the environment variables.
+
+
+guard is like a middleware that checks if the user is authenticated or not.
+if the user is authenticated,the request is allowed to proceed.
+if the user is not authenticated,the request is denied.
+
+to create a guard,we use the following command:
+nest g guard <guard-name>
+
+then in the guard.ts file,we define the logic for the guard.
+
+to use a guard,we add the guard to the controller using the @UseGuards decorator.
