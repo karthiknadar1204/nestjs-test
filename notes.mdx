@@ -209,3 +209,11 @@ now in the auth.module.ts file we import the user.module.ts file and use the use
 this is done using the imports"[] array in the auth.module.ts file.
 
 basically service is exported from one module[user] and then imported in anohter module[auth] using imports"[] array as module.
+
+
+
+
+To read environment variables,we use the following command:
+pnpm add @nestjs/config
+
+then in app.module.ts,in the imports"[] array we add the ConfigModule.forRoot() to read the environment variables.
