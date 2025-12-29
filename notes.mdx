@@ -1,0 +1,42 @@
+1. npm i -g @nestjs/cli
+2. nest -v
+3. nest --help
+4. nest new <project-name>
+5. cd <project-name>
+6. pnpm run start:dev
+7. open http://localhost:3000
+
+in nestjs project,each module is a compilation of folders mainly :
+- middleware
+- routes
+- controllers
+- services
+so if we have a user module,all user related endpoints will be under the user module following the above structure.
+refer to struct.png for more details.
+
+in app.service.ts,we define the business logic for the app. the @injectable decorator is used to inject the service into the controller.
+in app.controller.ts,we define the endpoints for the app. the @controller decorator is used to define the controller and the @get decorator is used to define the endpoint.
+in app.module.ts,we define the modules for the app. the @module decorator is used to define the module and the @imports decorator is used to import the modules.
+in main.ts,we bootstrap the app. the @nestfactory.create is used to create the app.
+
+
+to create a module using cli,use the following command:
+nest g module <module-name>
+
+any new module created gets registered in the app.module.ts file,app.module.ts is the root module of the app.
+
+
+TO create a controller using cli,use the following command:
+nest g controller <controller-name>
+-> we need to have a module first to create a controller.
+@Controller('auth') basically means that /auth is the base url for all the endpoints in the controller.
+
+to create a service using cli,use the following command:
+nest g service/s <service-name>
+
+to create a pipe using cli,use the following command:
+nest g pipe <pipe-name>
+
+to create a guard using cli,use the following command:
+nest g guard <guard-name>
+-> we need to have a module first to create a guard.
